@@ -1,0 +1,51 @@
+<div class="rounded-lg border bg-white p-4 mb-4">
+  <div class="flex items-center justify-between mb-4">
+    <span class="font-mono text-sm text-gray-500">Passport: <%= passport.uid %></span>
+
+    <span class="text-sm text-gray-500">
+      <%= pluralize(check_ins.size, "check-in") %>
+    </span>
+  </div>
+
+  <% if check_ins.any? %>
+    <ol class="relative border-s-2 border-gray-200 ms-3">
+      <% check_ins.each do |check_in| %>
+        <% event = check_in.event %>
+        <% stamp = stamp_for(event) %>
+        <% checked_in_at = checked_in_at_for_display(check_in) %>
+
+        <li class="mb-8 ms-8 last:mb-0">
+          <span class="absolute flex items-center justify-center w-8 h-8 bg-green-100 rounded-full -start-[1.05rem] ring-4 ring-white">
+            <%= helpers.fa("circle-check", style: :solid, class: "fill-green-700", size: :sm) %>
+          </span>
+
+          <%= link_to event_path(event), class: "group relative flex items-center gap-4 overflow-hidden rounded-lg border bg-white p-3 hover:bg-gray-50 transition-colors", data: {turbo_frame: "_top"} do %>
+            <% if stamp %>
+              <div class="pointer-events-none absolute right-2 top-1/2 z-0 size-20 -translate-y-1/2 opacity-20">
+                <%= helpers.ui_stamp(stamp, size: :full, interactive: false, rotate: true) %>
+              </div>
+            <% end %>
+
+            <div class="relative z-10 flex items-center gap-4 min-w-0 flex-1">
+              <%= image_tag helpers.image_path(event.card_image_path), class: "w-20 h-12 object-cover rounded border shrink-0", alt: event.name, width: 80, height: 48 %>
+
+              <div class="min-w-0 flex-1">
+                <div class="font-semibold text-gray-900 line-clamp-1 group-hover:underline"><%= event.name %></div>
+
+                <div class="text-sm text-gray-500 line-clamp-1">
+                  <%= event.to_location.to_html(show_links: false) %> · <%= event.formatted_dates %>
+                </div>
+              </div>
+            </div>
+          <% end %>
+
+          <time class="block mt-1.5 text-xs text-gray-400" datetime="<%= check_in.checked_in_at.iso8601 %>">
+            Checked in <%= checked_in_at.strftime("%B %-d, %Y at %H:%M %Z") %>
+          </time>
+        </li>
+      <% end %>
+    </ol>
+  <% else %>
+    <p class="text-sm text-gray-500">No check-ins yet on this passport</p>
+  <% end %>
+</div>

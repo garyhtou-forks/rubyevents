@@ -10,5 +10,5 @@
       countries_with_events: @countries_with_events,
       favorite_user: @favorite_user
     } do %>
-  <%= render partial: "profiles/passport", locals: {user: @user, check_ins: @check_ins} %>
+  <%= render partial: "profiles/passport", locals: {user: @user, check_ins: @check_ins, passports: @passports} %>
 <% end %>
